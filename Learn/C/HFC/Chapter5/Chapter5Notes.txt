@@ -1,0 +1,133 @@
+Struct == Structured Data type: a custom data type made from a collection from other
+pieces of Data.
+A struct has a fixed length (a fixed number of slots for other data) and each slot has
+a name.
+
+Definition example:
+(the template the computer will use. Outlining this template doesn't allocate memory.)
+
+struct fish
+{
+	const char* name;
+	const char* species;
+	int teeth;
+	int age;
+};
+
+(Creating an instance of a fish struct. This will allocate memory.)
+struct fish Snappy = {"Snappy", "Piranha", 3, 5};
+
+In this case the struct includes two pointers (to the name and the species strings)
+and two ints.
+But also, whole strings can be stored in there, with the normal notation.
+
+When you assign a struct to a variable, the computer will make a copy! (Vs pointers to
+a struct.)
+
+You can also assign values to slots using the normal variable notation:
+Snappy.teeth = 68;
+
+Accessing example.
+You can access the fields in an array using the '.' operator:
+printf("Name: %s\n", Snappy.name);
+
+Nesting is also possible with structs.
+
+Assigning values to nested structs is nested to. For example
+
+struct fish snappy = {"Snappy", "Piranha", {"meat", 0.2},{"Swimming", 2}};
+
+TYPEDEF: allows you to give your structured data type an alias as a name, so that
+you don't have to use the "struct" keyword every time you define of acces a struct.
+
+For example:
+
+typedef struct fish
+{
+	const char* name;
+	const char* species;
+	int teeth;
+	int age;
+} nemo;
+
+nemo snappy = {"Snappy", "Piranha", {"meat", 0.2},{"Swimming", 2}};
+
+This way you end up with two names: One for the struct and another as the name of the
+type.
+
+Always use typedef. Not doing it "is a Pain in the ass" as they say in stack overflow.
+
+When you want the contents of a struct to be changed by a function, you will need
+to pass the function a pointer to the piece of data you are trying to manipulate.
+(Take a look at the bottom of the file...)
+
+Example:
+"
+typedef struct turtle {
+
+} turtle;
+
+main()
+{
+	...
+	turtle myrtle = {...};
+	
+	happy_birthday(&myrtle);
+}
+
+void happy_birthday(turtle *t)
+{
+	...
+}
+"
+
+When you are trying to access the contents of a struct to which you only have a pointer,
+you need to get to the struct by dereferencing the pointer and then access the field
+you need. There are two notations available for that:
+
+(t*).age = 89;
+
+OR
+
+t->age = 89;
+
+The second means: go to the slot age in the struct pointed to by t and set it to ...
+This notation is specific for pointers only, while the dot notation is usable everywhere,
+as long as the variables around it are actual structs (not pointers to structs) 
+or slots of structs.
+
+Do the Safe Cracker puzzle.
+<Solution>
+
+You start from s and want to get to "GOLD!", using the struct notation to access the
+different fields.
+S is defined as a struct and not a pointer to a struct. To access its fields you just have
+to use the '.' notation. You want to get to "numbers" because the other field is just
+text. The "numbers" field is the name of a combination STRUCT (not a pointer to a struct).
+To access its contents you just have to write " s.numbers"
+
+GETTING FROM the "NUMBERS" field to GOLD!
+Numbers is a "combination" struct (look at the definition) and includes a field '&gold'
+Since numbers is not a pointer you can use the dot notation here too. &gold is the address
+of a 'swag' structure, meaning it is a pointer to 'gold', which is a structure of type 
+'swag'. So, to get to "GOLD!" you have to use the pointer. So you have the following 
+notation:
+
+<code>
+numbers.swag->description
+</code>
+
+So, in full, this is the way to get to "GOLD!":
+
+<code>
+printf("Contents: %s\n", s.numbers.swag->description);
+</code>
+
+</Solution>
+
+
+*************General C Programming Facts*********************************************
+If you want a function to change something in an object, be it a variable, a string, 
+a struct, you should assign a pointer to it and then pass that to the function. Otherwise,
+passing a variable, means that the value of the variable gets copied to a new variable, local
+to the new function and the original remains unchanged.

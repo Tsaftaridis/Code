@@ -1,4 +1,4 @@
-Struct == Structured Data type: a custom data type made from a collection from other
+Struct == Structured Data type: a custom data type made from a collection of other
 pieces of Data.
 A struct has a fixed length (a fixed number of slots for other data) and each slot has
 a name.
@@ -38,7 +38,7 @@ Assigning values to nested structs is nested to. For example
 struct fish snappy = {"Snappy", "Piranha", {"meat", 0.2},{"Swimming", 2}};
 
 TYPEDEF: allows you to give your structured data type an alias as a name, so that
-you don't have to use the "struct" keyword every time you define of acces a struct.
+you don't have to use the "struct" keyword every time you define of access a struct.
 
 For example:
 
@@ -51,6 +51,11 @@ typedef struct fish
 } nemo;
 
 nemo snappy = {"Snappy", "Piranha", {"meat", 0.2},{"Swimming", 2}};
+
+// WATCH OUT !!!
+// nemo snappy;
+// snappy = {"Snappy", ....}; won't actually compile, because the compiler thinks it is an
+// array and not a struct inititalized in a different line.
 
 This way you end up with two names: One for the struct and another as the name of the
 type.
@@ -125,6 +130,101 @@ printf("Contents: %s\n", s.numbers.swag->description);
 
 </Solution>
 
+<head>
+Unions
+</head>
+<body>
+<p>
+If you want to model something complex, from the real world a struct will do.
+If, though, you want to record something such as a quantity, which has many real-world
+interpretations (e.g. measurements of volume, mass, number), but only one assignable
+value you can't use a struct, because
+a. It will take up too much space in memory, creating all of the fields, most of which you 
+are not actually going to use.
+b. Someone might be able to set more than one value, which may create buggy and vulnerable 
+code.
+</p>
+<p>
+You can solve the above problem by using a UNION. A union is a variable that can have many
+different types, which are specified at the point of its definition. For example:
+</p>
+<code>
+typedef union quantity
+{
+	short count;
+	float weight;
+	float volume;
+}quantity;
+</code>
+<p>
+You can set the value of a union in any of three ways:
+a. C89 standard for the first field only: this means the quantity union is a count of 4.
+b. With "Designated Initializers", used to set the values other than the first: it means
+set the union as a floating point weight value.
+c. With the dot notation (easiest): this way you create a union in the first line and
+set it to a type and give it a value in a separate line.
+</p>
+<code>
+// a.
+	quantity q = {4};
+// b.
+	quantity q = {.weight=1.5};
+// c.
+	quantity q;
+	q.volume = 3.7;
+</code>
+<p>
+Designated initializers are also very useful for use with structs, and quite a lot when
+you want to initialize only some of the fields and not all of them. For example:
+</p>
+<code>
+typedef struct vehicle
+{
+	const char* color;
+	int gears;
+	int serial_no;
+	float height;
+}bike;
+
+bike my_bike = { .color = "Red", .gears = 3, .serial_no = 1234};
+</code>
+
+<subhead>
+Unions can be combined with structs.
+</subhead>
+<p>
+Just like combining structs you can also combine a struct with a union. To access the
+values in the struct you use the same dot and '->' notation as you would with a normal 
+struct.
+
+To set the value of the union, though, you have to use one of the ways mentioned above
+(the designated initializers are used most of the time).
+</p>
+</body>
+
+<head>
+Enums
+</head>
+<body>
+<p>
+Unions are useful when there is only a small number of values a text variable can have. 
+These values can be called symbols and used not as text, but as possibilities.
+For example:
+</p>
+<code>
+typedef enum weekdays
+{
+	MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}days;
+
+days favorite = FRIDAY;
+</code>
+<p>
+Enums are useful with struct and union combinations, because they allow you to keep track
+of the data types used with enum, without needing to store text variables or arrays, just
+symbols, with the added benefit of compilation errors in case of misspelled variables.
+</p>
+</body>
 
 *************General C Programming Facts*********************************************
 If you want a function to change something in an object, be it a variable, a string, 

@@ -11,6 +11,15 @@ int main()
 	CvCapture* webcam = cvCreateCameraCapture(0);
 	IplImage* prev, *next;
 	
+	//OpticalFlowFarneback variables:
+	double pyr_scale = 0.5;
+	int levels = 3;
+	int winsize = 5;
+	int iterations = 3;
+	int poly_n = 7;
+	double poly_sigma = 1.5;
+	int flags = 0;
+	
 	if(webcam == NULL)
 		error("Can't connect to webcam");
 	
@@ -26,27 +35,33 @@ int main()
 			IplImage *im_gray_next = cvCreateImage(cvGetSize(next), IPL_DEPTH_8U,1);
 			cvCvtColor(prev, im_gray_prev, CV_RGB2GRAY);
 			cvCvtColor(next, im_gray_next, CV_RGB2GRAY);
-			cvNamedWindow("Grayscale-prev", CV_WINDOW_AUTOSIZE);
-			cvNamedWindow("Grayscale-next", CV_WINDOW_AUTOSIZE);
-			cvShowImage("Grayscale-prev", im_gray_prev);
-			cvWaitKey(0);
-			cvShowImage("Grayscale-next", im_gray_next);
-			cvWaitKey(0);
-			cvReleaseImage(&im_gray_prev);
-			cvReleaseImage(&im_gray_prev);
-			cvDestroyWindow("Grayscale-prev");			
-			cvDestroyWindow("Grayscale-next");
+			//cvNamedWindow("Grayscale-prev", CV_WINDOW_AUTOSIZE);
+			//cvNamedWindow("Grayscale-next", CV_WINDOW_AUTOSIZE);
+			//cvShowImage("Grayscale-prev", im_gray_prev);
+			//cvWaitKey(0);
+			//cvShowImage("Grayscale-next", im_gray_next);
+			//cvWaitKey(0);
+			//cvDestroyWindow("Grayscale-prev");			
+			//cvDestroyWindow("Grayscale-next");
 			
+			//IplImage *flow = cvCreateImage(cvGetSize(im_gray_prev), CV_32FC3);
+			cvMat* flow = cvCreateMat(prev->height, next->width, CV_32FC2);
 			// Buggy code starts here:
-			IplImage *flow = cvCreateImage(cvGetSize(prev), IPL_DEPTH_8U, 3);
-			IplImage *flowGray = cvCreateImage(cvGetSize(prev), IPL_DEPTH_8U, 3);
-			cvCvtColor(flow,flowGray,CV_RGB2GRAY ); 
-
-			cvCalcOpticalFlowFarneback(im_gray_prev, im_gray_next, flow, 0.5, 1, 5, 5, 7, 1.5, 0);
+			cvCalcOpticalFlowFarneback(im_gray_prev, im_gray_next, flow, pyr_scale, levels, winsize, iterations, poly_n, poly_sigma, flags);
+			
+			cvNamedWindow("Flow", CV_WINDOW_AUTOSIZE);
+			cvShowImage("Flow", flow);
+			cvWaitKey(0);
+			//cvReleaseImage(flow);
+			cvDestroyWindow("Flow");
+			
 			// Buggy code ends here.. Too tired to look into it...
 			//cvCalcOpticalFlowFarneback(
-			//cvCalcOpticalFlowFarneback(previous, image, flow, 0.5, 1, 5, 5, 7, 1.5,  0);*/
-			//return 0;
+			//cvCalcOpticalFlowFarneback((const CvArr* prevImg, const CvArr* nextImg, CvArr* flow, double pyrScale, int levels, int winsize, int iterations, int polyN, double polySigma, int flags¶);*/
+			
+			cvReleaseImage(&im_gray_prev);
+			cvReleaseImage(&im_gray_next);
+			return 0;
 		}
 	}
 	

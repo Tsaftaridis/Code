@@ -1,3 +1,9 @@
+/* Intermediate file towards intruder.c 
+   Makefile the same as intruder but with a different target and source file.
+   Compiles, runs and gives some kind of score depending on the movement.
+   Not useful at all. Written just to get a feel of the opencv functions needed.
+ */
+
 #include <stdio.h>
 #include <opencv/cv.h>
 #include <unistd.h>

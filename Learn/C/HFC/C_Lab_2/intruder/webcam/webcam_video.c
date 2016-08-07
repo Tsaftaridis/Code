@@ -17,7 +17,7 @@ int main()
 	{		
 		cvShowImage("Frame", frame);
 
-		char c = cvWaitKey(33);
+		char c = cvWaitKey(13);
 		
 		if(c == 27)
 			break;		

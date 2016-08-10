@@ -1,22 +1,17 @@
-/*  intruder.c 
-	
-	Code written as a project for the book "Head First C", in "C Lab #2".
-	Detects movement in the webcam feed and captures an image when a movement threshold is
-	treaded.
- */
-
 #include <stdio.h>
 #include <opencv/highgui.h>
 #include <opencv/cv.h>
 #include <unistd.h>
 #include <opencv/cxcore.h>
 #include "error_handling.h"
-#include "intruder.h"
+#include "advanced.h"
 
 int main()
 {
 	// Wait for the user to get away.
-	sleep(10);
+	sleep(1);
+	
+	unsigned long int middle;
 	
 	// create CvCapture struct as a handle to the webcam - with error checking
 	CvCapture* webcam = cvCreateCameraCapture(0);
@@ -35,50 +30,42 @@ int main()
 	
 	// Store the B&W version of the previous frame.
 	IplImage* gray_prev_frame = cvCreateImage(cvGetSize(frame), IPL_DEPTH_8U, 1);
-	cvCvtColor(prev_frame, gray_prev_frame, CV_RGB2GRAY);
-	
-	// Store the B&W version of the next frame.
-	IplImage* gray_frame = cvCreateImage(cvGetSize(frame), IPL_DEPTH_8U, 1);
-	cvCvtColor(frame, gray_frame,  CV_RGB2GRAY);
 	
 	// Create the optical flow container.
 	CvMat* optical_flow = cvCreateMat(frame->height, frame->width, CV_32FC2);
 	
-	//OpticalFlowFarneback variables:
-	double pyr_scale = 0.5;
-	int levels = 3;
-	int winsize = 5;
-	int iterations = 3;
-	int poly_n = 7;
-	double poly_sigma = 1.5;
-	int flags = 0;
+	// Store the B&W version of the next frame.
+	IplImage* gray_frame = cvCreateImage(cvGetSize(frame), IPL_DEPTH_8U, 1);
 	
 	// The program terminates only via SIGINT (Ctrl^C) or error signals at this point.
-	while(1)
+	for(int shit = 0; shit < 20; shit++)
 	{	
-		// Calculate Farneback Optical Flow
-		cvCalcOpticalFlowFarneback(gray_frame, gray_prev_frame, optical_flow, pyr_scale, levels, winsize, iterations, poly_n, poly_sigma, flags);
-		float score = absolute_value(sum(optical_flow));
+		float score = simple_movement_calculation(prev_frame, frame, gray_prev_frame, gray_frame, optical_flow);
 		
+		printf("%f\n", score);
+
 		// Set the threshold for max movement*.
 		// (*Threshold set based on observation and experimentation: the average result in
 		// a loop with no (intentional) movement, over 20, 50, 100 iterations.)		
+	    
+	    middle += score;
+	    		
 		if(score > 20000)
 		{
 			printf("\t\tYOU MOVED!!\n");
 		}
 		
+		// Get frame.
 		prev_frame = cvQueryFrame(webcam);
-		cvCvtColor(prev_frame, gray_prev_frame, CV_RGB2GRAY);
 		
+		usleep(330);
+
 		// Get the next frame and then do it all over again.
 		frame = cvQueryFrame(webcam);
-		
-		// The Farneback function needs the frames in B&W.
-		cvCvtColor(frame, gray_frame,  CV_RGB2GRAY);
 	}
 
-
+	printf("\n\n\n%lu\n\n\n", middle/20);
+	
 	cvReleaseImage(&frame);
 	cvReleaseImage(&gray_prev_frame);
 	

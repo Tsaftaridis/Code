@@ -35,9 +35,9 @@ float absolute_value(float s)
 double pyr_scale = 0.5;
 int levels = 3;
 int winsize = 5;
-int iterations = 3;
-int poly_n = 7;
-double poly_sigma = 1.5;
+int iterations = 1;
+int poly_n = 5;
+double poly_sigma = 1.2;
 int flags = 0;
 
 float simple_movement_calculation(IplImage* prev_frame, IplImage* frame, IplImage* gray_prev_frame, IplImage* gray_frame, CvMat* optical_flow)

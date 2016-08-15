@@ -1,6 +1,0 @@
-#1 install macports
-#2 $ sudo port install gdb
-#3 follow instructions on pdf
-#4 gdb is actually named ggdb as the macports version
-   In troubleshooting: use the file command and expect an output containing the word "executable"
-# The full path to ggdb is /opt/local/bin/

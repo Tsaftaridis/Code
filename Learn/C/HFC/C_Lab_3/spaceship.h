@@ -4,12 +4,21 @@
 
 typedef struct
 {
+	float speed;
+	float angle;
+}vector;
+
+typedef struct
+{
 	float sx;
 	float sy;
-	float heading;
-	float speed; 
+	vector current;
+	vector old;
 	int gone;
 	ALLEGRO_COLOR color;	
 } spaceship;
 
 void draw_spaceship(spaceship* s);
+void accelerate_spaceship(spaceship* s);
+void decelerate_spaceship(spaceship* s);
+void move_spaceship(spaceship* s);

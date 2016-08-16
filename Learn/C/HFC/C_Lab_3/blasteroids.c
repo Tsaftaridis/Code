@@ -24,58 +24,49 @@ enum MYKEYS {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT};
 
 spaceship s;
 
-int main(int argc, char **argv)
+typedef struct data
 {
+	ALLEGRO_DISPLAY *display;
+	bool redraw;
+	bool doexit;
+	bool empty_queue;
+}data;
+	
+
+void* keys(ALLEGRO_THREAD* a, void* data_t0)
+{
+	printf("1");
+	data* variables = (data*)data_t0;
+	printf("2");
 	ALLEGRO_EVENT_QUEUE *queue = NULL;
 	ALLEGRO_EVENT event;
-	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_TIMER *timer = NULL;
-	bool redraw = true;
-	bool doexit = false;
-	bool key[4] = {false, false, false, false};
 	
-	// Initialise allegro framework
-	if(!al_init())
-		error("Could not install allegro system.");
-	
-	if(!al_install_keyboard())
-		error("Could not install keyboard");
-		
+			
 	timer = al_create_timer(1.0/FPS);
 	if(!timer)
 		error("Could not create timer.");
-	//Create a display
-	display = al_create_display(SCREEN_W, SCREEN_L);
+		
+		
+	if(!al_install_keyboard())
+		error("Could not install keyboard");
 	
-	if(!display)
-	{
-		al_destroy_timer(timer);
-		error("Could not create display...");
-	}
+	(variables->doexit) = false;
+	bool key[4] = {false, false, false, false};
 
-	queue = al_create_event_queue();	
+	queue = al_create_event_queue();
 	
-	// Change display
-	s.color = al_map_rgb(0, 255, 0);
-	s.sx = 960;
-	s.sy = 540;
-	s.current.angle = 0;
-	s.old.angle = 0;
+	al_start_timer(timer);
 	
-	al_register_event_source(queue, al_get_display_event_source(display));
+	al_register_event_source(queue, al_get_display_event_source(variables->display));
 	al_register_event_source(queue, al_get_timer_event_source(timer));
 	al_register_event_source(queue, al_get_keyboard_event_source());
- 	al_clear_to_color(al_map_rgb(0,0,0));
- 	al_flip_display();
- 	al_start_timer(timer);
 
-	while(!doexit)
-	{	
-		al_clear_to_color(al_map_rgb(0,0,0));
-		draw_spaceship(&s);
-		al_flip_display();
+	while(!(variables->doexit))
+	{
+		puts("Done");
 		al_wait_for_event(queue, &event);
-		
+		puts("Done 1");
 		if(event.type == ALLEGRO_EVENT_TIMER)
 		{
 			if(key[KEY_UP])
@@ -96,10 +87,9 @@ int main(int argc, char **argv)
 			else if(key[KEY_RIGHT])
 			{
 				s.current.angle += 0.9;
-				
 			}
 			move_spaceship(&s);
-			redraw = true;
+			(variables->redraw) = true;
 		}
 		
 		else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -138,27 +128,72 @@ int main(int argc, char **argv)
 				key[KEY_DOWN] = false;
 				break;
 				case ALLEGRO_KEY_ESCAPE:
-				doexit = true;
+				(variables->doexit) = true;
 				break;
 			}
 		}
-		
-		if(redraw && al_is_event_queue_empty(queue))
+		(variables->empty_queue) = al_is_event_queue_empty(queue);
+	}
+	al_destroy_event_queue(queue);
+	return NULL;
+}
+
+int main(int argc, char **argv)
+{
+
+	ALLEGRO_DISPLAY *display = NULL;
+	
+	// Initialise allegro framework
+	if(!al_init())
+		error("Could not install allegro system.");
+
+
+	//Create a display
+	display = al_create_display(SCREEN_W, SCREEN_L);
+	
+	if(!display)
+	{
+		//al_destroy_timer(timer);
+		error("Could not create display...");
+	}
+	
+	// Change display
+	s.color = al_map_rgb(0, 255, 0);
+	s.sx = 960;
+	s.sy = 540;
+	s.current.angle = 0;
+	s.old.angle = 0;
+	
+ 	al_clear_to_color(al_map_rgb(0,0,0));
+ 	al_flip_display();
+ 	bool doexit = false;
+ 	bool empty_queue = true;
+ 	
+ 	data data_t0 = {display, false, false, true};
+
+ 	ALLEGRO_THREAD *t0 = al_create_thread(keys, (void*)&data_t0);
+	if(t0 == NULL)
+		error("Could not create thread t0");
+	al_start_thread(t0);
+	while(!data_t0.doexit)
+	{	
+		al_clear_to_color(al_map_rgb(0,0,0));
+		draw_spaceship(&s);
+		al_flip_display();		
+		if(data_t0.redraw)
 		{
-			redraw = false;
-			
+			data_t0.redraw = false;
 			al_clear_to_color(al_map_rgb(0, 0, 0));
-			
 			draw_spaceship(&s);
-			
 			al_flip_display();
 		}
-
 	}
-	al_destroy_display(display);
-	al_destroy_event_queue(queue);
-	al_uninstall_system();
 	
+	void **result;
+	al_join_thread(t0, result);
+
+	al_destroy_display(display);
+	al_uninstall_system();
 	return 0;
 }
 

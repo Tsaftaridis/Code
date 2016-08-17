@@ -5,7 +5,7 @@
 typedef struct
 {
 	float speed;
-	float angle;
+	float allegro_degrees;
 }vector;
 
 typedef struct

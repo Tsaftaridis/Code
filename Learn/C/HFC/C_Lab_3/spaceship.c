@@ -8,25 +8,17 @@
 
 #include <math.h>
 
+#define PI 3.1415
+#define REGULAR_DEGREES(x) 360*(x)/256//x = input in allegro_degrees
+#define RADIANS(x) (x)*PI/128// x = input in allegro_degrees
 #define MAX_SPEED 10
 float n = 0.4;
-
-float degrees_to_al(float x)
-{
-	return x*12.4/720;
-}
-
-float al_to_degrees(float x)
-{
-	return x*720/12.4000003;
-}
-
 
 void draw_spaceship(spaceship* s)
 {
 	ALLEGRO_TRANSFORM transform;
 	al_identity_transform(&transform);
-	al_rotate_transform(&transform, degrees_to_al(s->current.angle));
+	al_rotate_transform(&transform, RADIANS(s->current.allegro_degrees));
 	al_translate_transform(&transform, s->sx, s->sy);
 	al_use_transform(&transform);
 	al_draw_line(-80*n, 90*n, 0*n, -110*n, s->color, n*8.0f);
@@ -42,12 +34,11 @@ void accelerate_spaceship(spaceship *s)
 		s->current.speed += 0.1;
 	}
 	s->old.speed = s->current.speed;
-	s->old.angle = s->current.angle;
+	s->old.allegro_degrees = s->current.allegro_degrees;
 }
 
-void decelerate_spaceship(spaceship *s)
+void decelerate_spaceship(spaceship* s)
 {
-
 	if(s->old.speed > 0.3)
 	{
 		s->old.speed -= 0.3;
@@ -58,44 +49,18 @@ void decelerate_spaceship(spaceship *s)
 	}
 }
 
-void move_spaceship(spaceship* s)
+void move_spaceship(spaceship *s)
 {
+	while(s->current.allegro_degrees >= 256)
+	{
+		s->current.allegro_degrees -= 256;
+	}
 	
-	
-	
-	int direction = ((int)(s->old.angle)%359);
-	if( direction == 90 || direction == 270)
-	{
-		s->sy = s->sy + s->old.speed;
-	}
-	else if(direction == 0 || direction == 180)
-	{
-		s->sx = s->sx + s->old.speed;
-	}
-	else if(direction > 0 && direction < 90)//sin > 0, cos > 0....
-	{
-		printf("One");
-		s->sy = s->sy - s->old.speed*cos(direction);
-		s->sx = s->sx + s->old.speed*sin(direction);
-	}
-	else if(direction > 90 && direction < 180)// sin > 0, cos < 0....
-	{
-		printf("Two");
-		s->sy -= s->old.speed*cos(direction);
-		s->sx += s->old.speed*sin(direction);
-	}
-	else if(direction > 180 && direction < 270)// sin < 0, cos < 0....
-	{
-		printf("Three");
-		s->sy -= s->old.speed*cos(direction);
-		s->sx += s->old.speed*sin(direction);
-	}
-	else if(direction > 270 && direction < 360)// sin < 0, cos > 0....
-	{
-		printf("Four");
-		s->sy -= s->old.speed*cos(direction);
-		s->sx += s->old.speed*sin(direction);
-	}
+	//Uncomment the next for a more primitive spaceship! (make sure you comment the one after that).
+	//float rad = RADIANS(s->old.allegro_degrees);
+	float rad = RADIANS(s->current.allegro_degrees);
+	s->sy = s->sy - s->old.speed * cos(rad);
+	s->sx = s->sx + s->old.speed * sin(rad);
 
 	if(s->sx < 0)
 	{

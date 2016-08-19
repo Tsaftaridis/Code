@@ -3,7 +3,6 @@
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
-#include <pthread.h>
 #include <signal.h>
 #include <math.h>
 
@@ -77,11 +76,11 @@ void* keys(ALLEGRO_THREAD* a, void* data_t0)
 			{
 				s.current.allegro_degrees += 1;
 			}
-			else if(key[KEY_SPACE])
+			else if(key[KEY_RIGHT])
 			{
-				key[KEY_SPACE] = false;
 				create_blast(&s);
 				destroy_blasts();
+				usleep(33000);
 			}
 			variables->redraw = true;
 		}
@@ -101,9 +100,6 @@ void* keys(ALLEGRO_THREAD* a, void* data_t0)
 				break;
 				case ALLEGRO_KEY_DOWN:
 				key[KEY_DOWN] = true;
-				break;
-				case ALLEGRO_KEY_SPACE:
-				key[KEY_SPACE] = true;
 				break;
 			}
 		}
@@ -127,8 +123,12 @@ void* keys(ALLEGRO_THREAD* a, void* data_t0)
 				case ALLEGRO_KEY_ESCAPE:
 				(variables->doexit) = true;
 				break;
+				case ALLEGRO_KEY_SPACE:
+				key[KEY_SPACE] = true;
+				break;
 			}
 		}
+		
 		if(al_is_event_queue_empty(queue) && variables->redraw)
 		{
 			move_spaceship(&s);

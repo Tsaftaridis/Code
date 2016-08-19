@@ -82,7 +82,10 @@ void draw_blasts()
 				al_identity_transform(&transform);
 				al_translate_transform(&transform, conductor->sx, conductor->sy);
 				al_use_transform(&transform);
-				al_draw_line(0, 0, 0, 20, conductor->color, 6.0f);
+				al_draw_line(0, 0, 6, 0, conductor->color, 1.0f);
+				al_draw_line(0, 1, 6, 1, conductor->color, 1.0f);
+				al_draw_line(0, 2, 6, 2, conductor->color, 1.0f);
+				al_draw_line(0, 3, 6, 3, conductor->color, 1.0f);
 			}
 		}
 	}
@@ -94,9 +97,11 @@ void destroy_blasts()
 	if(root != NULL)
 	{
 		conductor = root;
+		
 		// Reach the end of the linked list 
 		while(conductor->next != NULL)
 		{
+			conductor = conductor->next;
 			if(conductor->gone == 1)
 			{
 				temp = conductor;

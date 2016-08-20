@@ -1,5 +1,7 @@
 #include "spaceship.h"
 
+#define MAX_SPEED 0.0001
+
 void draw_spaceship(spaceship* s)
 {
 	float n = 0.4; // Drawing scale.
@@ -18,33 +20,35 @@ void accelerate_spaceship(spaceship *s)
 {
 	if(s->current.speed < MAX_SPEED)
 	{
-		s->current.speed += 10;
+		s->current.speed += 0.00000001;	
 	}
 	s->old.speed = s->current.speed;
 	s->old.allegro_degrees = s->current.allegro_degrees;
-	printf("Current.speed = %f\n", s->current.speed); 
 }
 
 void decelerate_spaceship(spaceship* s)
 {
-	if(s->old.speed > 10)
+	if(s->old.speed > 0.0001)
 	{
-		s->old.speed -= 10;
+		s->old.speed -= 0.0001;
 	}
 	else
 	{
 		s->old.speed = 0;
+		s->current.speed = 0;
 	}
+	printf("old.speed = %f\n", s->old.speed); 
+
 }
 
 void increase_angle(spaceship *s)
 {
-	s->current.allegro_degrees += 0.1;
+	s->current.allegro_degrees += 0.00001;
 }
 
 void decrease_angle(spaceship *s)
 {
-	s->current.allegro_degrees -= 0.1;
+	s->current.allegro_degrees -= 0.00001;
 }
 
 void move_spaceship(spaceship *s)
@@ -57,8 +61,8 @@ void move_spaceship(spaceship *s)
 	//Uncomment the next for a more primitive spaceship! (make sure you comment the one after that).
 	//float rad = RADIANS(s->old.allegro_degrees);
 	float rad = RADIANS(s->current.allegro_degrees);
-	s->sy = s->sy - s->old.speed * cos(rad);
-	s->sx = s->sx + s->old.speed * sin(rad);
+	s->sy = s->sy - s->old.speed *(long double) cos(rad);
+	s->sx = s->sx + s->old.speed *(long double) sin(rad);
 
 	if(s->sx < 0)
 	{

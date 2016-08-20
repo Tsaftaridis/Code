@@ -5,6 +5,9 @@ data_t1 objects_variables;
 control threads;
 spaceship s;
 
+ALLEGRO_TIMER *timer;
+ALLEGRO_EVENT event;
+
 int main(int argc, char **argb)
 {
 	if(!al_init())
@@ -29,7 +32,6 @@ int main(int argc, char **argb)
 	al_start_thread(t1);
 	
 // Start the timer and keyboard communications
-	ALLEGRO_TIMER *timer;
 	timer = al_create_timer(1.0/FPS);
 	if(!timer)
 		error("Could not create timer");
@@ -53,7 +55,6 @@ int main(int argc, char **argb)
 	
 	while(!threads.doexit)
 	{
-		ALLEGRO_EVENT event;
 		al_wait_for_event(queue, &event);
 		
 		if(event.type == ALLEGRO_EVENT_TIMER)
@@ -64,15 +65,23 @@ int main(int argc, char **argb)
 			}
 			else if(key[KEY_DOWN])
 			{
-				objects_variables.do_decelerate = true;; //TODO
+				objects_variables.do_decelerate = true;
 			}
 			else if(key[KEY_LEFT])
 			{
-				objects_variables.do_turn_left = true;; //TODO
+				objects_variables.do_turn_left = true;
 			}
 			else if(key[KEY_RIGHT])
 			{
-				objects_variables.do_turn_right = true;; //TODO
+				objects_variables.do_turn_right = true;
+			}
+			else
+			{
+				objects_variables.do_accelerate = false;
+				objects_variables.do_decelerate = false;
+				objects_variables.do_turn_left = false;
+				objects_variables.do_turn_right = false; 
+
 			}
 			threads.redraw = true;
 		}
@@ -123,6 +132,7 @@ int main(int argc, char **argb)
 				
 				case ALLEGRO_KEY_ESCAPE:
 				threads.doexit = true;
+				break;
 			}
 		}
 		if(al_is_event_queue_empty(queue))
@@ -169,6 +179,8 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 	s.current.allegro_degrees = 0;
 	obj_vars->s_p = &s;
 	
+	int i = 0;
+	
 	while(!threads.doexit)
 	{
 		if(obj_vars->do_turn_right)
@@ -179,6 +191,9 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			accelerate_spaceship(&s);
 		else if(obj_vars->do_decelerate)
 			decelerate_spaceship(&s);
+		if(threads.redraw && threads.no_events && !(i%10))
+			move_spaceship(&s);
+		i++;
 	}
 	
 	return NULL;

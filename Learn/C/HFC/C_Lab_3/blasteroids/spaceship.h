@@ -6,7 +6,7 @@
 
 #define PI 3.14
 #define RADIANS(x) x*PI/128
-#define MAX_SPEED 100 // 5 pixels/cycle 
+ // 1 pixel/timer cycle == 10 pixels/frame == 60 pixels/second
 
 typedef struct
 

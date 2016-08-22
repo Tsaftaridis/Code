@@ -59,6 +59,7 @@ int main(int argc, char **argb)
 		
 		if(event.type == ALLEGRO_EVENT_TIMER)
 		{
+			threads.redraw = false;
 			if(key[KEY_UP])
 			{
 				objects_variables.do_accelerate = true;
@@ -81,7 +82,6 @@ int main(int argc, char **argb)
 				objects_variables.do_decelerate = false;
 				objects_variables.do_turn_left = false;
 				objects_variables.do_turn_right = false; 
-
 			}
 			threads.redraw = true;
 		}
@@ -135,8 +135,6 @@ int main(int argc, char **argb)
 				break;
 			}
 		}
-		if(al_is_event_queue_empty(queue))
-			threads.no_events = true;
 	}
 	
 	void **result;
@@ -183,17 +181,19 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 	
 	while(!threads.doexit)
 	{
-		if(obj_vars->do_turn_right)
-			increase_angle(&s);
-		else if(obj_vars->do_turn_left)
-			decrease_angle(&s);
-		else if(obj_vars->do_accelerate)
-			accelerate_spaceship(&s);
-		else if(obj_vars->do_decelerate)
-			decelerate_spaceship(&s);
-		if(threads.redraw && threads.no_events && !(i%10))
+		if(threads.redraw == true)
+		{
+			threads.redraw = false;
+			if(obj_vars->do_turn_right)
+				increase_angle(&s);
+			else if(obj_vars->do_turn_left)
+				decrease_angle(&s);
+			else if(obj_vars->do_accelerate)
+				accelerate_spaceship(&s);
+			else if(obj_vars->do_decelerate)
+				decelerate_spaceship(&s);
 			move_spaceship(&s);
-		i++;
+		}
 	}
 	
 	return NULL;

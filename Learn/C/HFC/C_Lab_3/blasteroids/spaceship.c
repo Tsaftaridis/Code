@@ -1,6 +1,7 @@
 #include "spaceship.h"
 
-#define MAX_SPEED 0.0001
+#define MAX_SPEED (float)10//120 pixels per second, 2 pixels per frame, 0.2 pixels per timer tick...
+#define AL_DEG_STEP (float)256/150//256 al_deg per second, 256/20 al_deg per frame, 256/200 al_deg per timer tick...
 
 void draw_spaceship(spaceship* s)
 {
@@ -20,7 +21,7 @@ void accelerate_spaceship(spaceship *s)
 {
 	if(s->current.speed < MAX_SPEED)
 	{
-		s->current.speed += 0.00000001;	
+		s->current.speed += MAX_SPEED/100.0;	
 	}
 	s->old.speed = s->current.speed;
 	s->old.allegro_degrees = s->current.allegro_degrees;
@@ -28,9 +29,9 @@ void accelerate_spaceship(spaceship *s)
 
 void decelerate_spaceship(spaceship* s)
 {
-	if(s->old.speed > 0.0001)
+	if(s->old.speed > MAX_SPEED/100.0)
 	{
-		s->old.speed -= 0.0001;
+		s->old.speed -= MAX_SPEED/100.0;
 	}
 	else
 	{
@@ -43,12 +44,12 @@ void decelerate_spaceship(spaceship* s)
 
 void increase_angle(spaceship *s)
 {
-	s->current.allegro_degrees += 0.00001;
+	s->current.allegro_degrees += AL_DEG_STEP;
 }
 
 void decrease_angle(spaceship *s)
 {
-	s->current.allegro_degrees -= 0.00001;
+	s->current.allegro_degrees -= AL_DEG_STEP;
 }
 
 void move_spaceship(spaceship *s)

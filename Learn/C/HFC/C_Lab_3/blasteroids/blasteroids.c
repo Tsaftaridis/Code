@@ -4,6 +4,7 @@ data_t0 graphics_variables;
 data_t1 objects_variables;
 control threads;
 spaceship s;
+blast b;
 
 ALLEGRO_TIMER *timer;
 ALLEGRO_EVENT event;
@@ -133,6 +134,10 @@ int main(int argc, char **argb)
 				case ALLEGRO_KEY_ESCAPE:
 				threads.doexit = true;
 				break;
+				
+				case ALLEGRO_KEY_SPACE:
+				create_blast(&s);
+				break;
 			}
 		}
 	}
@@ -158,6 +163,7 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 		{
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			draw_spaceship(objects_variables.s_p);
+			draw_blasts();
 			al_flip_display();
 		}
 	}
@@ -177,8 +183,6 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 	s.current.allegro_degrees = 0;
 	obj_vars->s_p = &s;
 	
-	int i = 0;
-	
 	while(!threads.doexit)
 	{
 		if(threads.redraw == true)
@@ -193,9 +197,9 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			else if(obj_vars->do_decelerate)
 				decelerate_spaceship(&s);
 			move_spaceship(&s);
+			manage_blasts();
 		}
 	}
-	
 	return NULL;
 }
 

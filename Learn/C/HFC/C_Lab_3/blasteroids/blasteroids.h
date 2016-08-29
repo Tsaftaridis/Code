@@ -6,7 +6,8 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 
-#include "spaceship.h"
+#include "asteroid.h"
+#include "blast.h"
 
 #define FPS 60
 

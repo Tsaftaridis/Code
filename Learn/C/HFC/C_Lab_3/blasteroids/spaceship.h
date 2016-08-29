@@ -6,10 +6,9 @@
 
 #define PI 3.14
 #define RADIANS(x) x*PI/128
- // 1 pixel/timer cycle == 10 pixels/frame == 60 pixels/second
+// 1 pixel/timer cycle == 10 pixels/frame == 60 pixels/second
 
 typedef struct
-
 {
 	float speed;
 	float allegro_degrees;

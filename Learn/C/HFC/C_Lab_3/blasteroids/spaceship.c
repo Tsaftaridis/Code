@@ -17,6 +17,7 @@ void draw_spaceship(spaceship* s)
 	al_draw_line(60*n, 40*n, 10*n, 40*n, s->color, n*8.0f);	 
 }
 
+
 void accelerate_spaceship(spaceship *s)
 {
 	if(s->current.speed < MAX_SPEED)
@@ -59,9 +60,9 @@ void move_spaceship(spaceship *s)
 		s->current.allegro_degrees -= 256;
 	}
 	
-	//Uncomment the next for a more primitive spaceship! (make sure you comment the one after that).
-	//float rad = RADIANS(s->old.allegro_degrees);
-	float rad = RADIANS(s->current.allegro_degrees);
+	//Uncomment the next for a more advanced spaceship! (make sure you comment the one after that).
+	float rad = RADIANS(s->old.allegro_degrees);
+	//float rad = RADIANS(s->current.allegro_degrees);
 	s->sy = s->sy - s->old.speed *(long double) cos(rad);
 	s->sx = s->sx + s->old.speed *(long double) sin(rad);
 

@@ -31,13 +31,13 @@ int main(int argc, char **argb)
 		error("Could not create thread(s)");
 	al_start_thread(t0);
 	al_start_thread(t1);
-	
+
 // Start the timer and keyboard communications
 	timer = al_create_timer(1.0/FPS);
 	if(!timer)
 		error("Could not create timer");
-	al_start_timer(timer);	
-	
+	al_start_timer(timer);
+
 	if(!al_install_keyboard())
 		error("Could not install keyboard");
 
@@ -53,11 +53,11 @@ int main(int argc, char **argb)
 	enum MYKEYS {KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT};
 	bool key[4] = {false, false, false, false};
 	threads.no_events = false;
-	
+
 	while(!threads.doexit)
 	{
 		al_wait_for_event(queue, &event);
-		
+
 		if(event.type == ALLEGRO_EVENT_TIMER)
 		{
 			threads.redraw = false;
@@ -82,7 +82,7 @@ int main(int argc, char **argb)
 				objects_variables.do_accelerate = false;
 				objects_variables.do_decelerate = false;
 				objects_variables.do_turn_left = false;
-				objects_variables.do_turn_right = false; 
+				objects_variables.do_turn_right = false;
 			}
 			threads.redraw = true;
 		}
@@ -97,15 +97,15 @@ int main(int argc, char **argb)
 				case ALLEGRO_KEY_UP:
 				key[KEY_UP] = true;
 				break;
-				
+
 				case ALLEGRO_KEY_DOWN:
 				key[KEY_DOWN] = true;
 				break;
-				
+
 				case ALLEGRO_KEY_LEFT:
 				key[KEY_LEFT] = true;
 				break;
-				
+
 				case ALLEGRO_KEY_RIGHT:
 				key[KEY_RIGHT] = true;
 				break;
@@ -118,30 +118,30 @@ int main(int argc, char **argb)
 				case ALLEGRO_KEY_UP:
 				key[KEY_UP] = false;
 				break;
-				
+
 				case ALLEGRO_KEY_DOWN:
 				key[KEY_DOWN] = false;
 				break;
-				
+
 				case ALLEGRO_KEY_LEFT:
 				key[KEY_LEFT] = false;
 				break;
-				
+
 				case ALLEGRO_KEY_RIGHT:
 				key[KEY_RIGHT] = false;
 				break;
-				
+
 				case ALLEGRO_KEY_ESCAPE:
 				threads.doexit = true;
 				break;
-				
+
 				case ALLEGRO_KEY_SPACE:
 				create_blast(&s);
 				break;
 			}
 		}
 	}
-	
+
 	void **result;
 	al_join_thread(t0, result);
 	al_join_thread(t1, result);
@@ -154,15 +154,16 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 	data_t0 *graph_vars = (data_t0 *) vars;
 	graph_vars->SCREEN_WIDTH = 1920;
 	graph_vars->SCREEN_LENGTH = 1080;
-	
+
 	graph_vars->display_p = al_create_display(graph_vars->SCREEN_WIDTH, graph_vars->SCREEN_LENGTH);
-	
+
 	while(!threads.doexit)
 	{
 		if(threads.redraw)
 		{
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			draw_spaceship(objects_variables.s_p);
+			draw_asteroids();
 			draw_blasts();
 			al_flip_display();
 		}
@@ -172,7 +173,7 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 }
 
 void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
-{	
+{
 	data_t1 *obj_vars = (data_t1 *) objects_variables;
 
 	s.sx = graphics_variables.SCREEN_WIDTH/2;
@@ -182,7 +183,8 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 	s.current.speed = 0;
 	s.current.allegro_degrees = 0;
 	obj_vars->s_p = &s;
-	
+	initialize_asteroids();
+
 	while(!threads.doexit)
 	{
 		if(threads.redraw == true)
@@ -197,6 +199,7 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			else if(obj_vars->do_decelerate)
 				decelerate_spaceship(&s);
 			move_spaceship(&s);
+			manage_asteroids();
 			manage_blasts();
 		}
 	}

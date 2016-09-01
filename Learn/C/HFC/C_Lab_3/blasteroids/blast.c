@@ -12,14 +12,13 @@
 
 #ifndef RADIANS
 #define RADIANS(x)  x*PI/128
-#endif 
+#endif
 
-blast *head = NULL;
-blast *conductor = NULL;
-blast *painter = NULL;
-blast *mover = NULL;
+static blast *head = NULL;
+static blast *conductor = NULL;
+static blast *painter = NULL;
+static blast *mover = NULL;
 
-// This one shows us the problems:
 void draw_blasts()
 {
 	if(head)
@@ -32,12 +31,8 @@ void draw_blasts()
 				ALLEGRO_TRANSFORM t;
 				al_identity_transform(&t);
 				al_translate_transform(&t, painter->sx, painter->sy);
-				//float rad = RADIANS(painter->heading);
-				//al_rotate_transform(&t, rad);
 				al_use_transform(&t);
 				al_draw_line(0, 0, 1, 12, painter->color, 10.0f);
-				//al_draw_line(1, 18, 1, 30, painter->color, 10.0f);
-				//al_draw_line(1, 36, 1, 48, painter->color, 10.0f);
 			}
 		}while((painter = painter->next));
 	}
@@ -53,7 +48,7 @@ void move_blast()
 			float rad = RADIANS(mover->heading);
 			mover->sy = mover->sy - mover->speed * cos(rad);
 			mover->sx = mover->sx + mover->speed * sin(rad);
-		
+
 			if(mover->sx < 0 || mover->sx > 1920 || mover->sy > 1080 || mover->sy < 0)
 			{
 				mover->gone = 1;
@@ -85,7 +80,7 @@ void create_blast(spaceship *s)
 		}
 		conductor->next = malloc(sizeof(struct blast));
 		conductor = conductor->next;
-		
+
 		if(conductor == NULL)
 		{
 			printf("Out of memory!\n");
@@ -116,10 +111,10 @@ void manage_blasts()
 	{
 		// If the blast exists, do nothing.
 		if(conductor->gone == 0)
-		{	
+		{
 			prev = conductor;
 		}
-		// If the blast does not exist, 
+		// If the blast does not exist,
 		else if(conductor->gone == 1)
 		{
 			// delete it ./-prev->next = con->next-\.
@@ -131,7 +126,6 @@ void manage_blasts()
 			{
 				if(conductor == head)
 				{
-					printf("Freed head with company\n");
 					// Temporary pointer for the struct that is to be deleted.
 					blast *del = head;
 			    	// Keep the chain closed
@@ -147,7 +141,6 @@ void manage_blasts()
 				}
 				else
 				{
-					printf("Freed conductor with company\n");
 					// Temporary pointer for the struct that is to be deleted.
 					blast *del = NULL;
 			    	// Keep the chain closed
@@ -168,7 +161,6 @@ void manage_blasts()
 				// And the conductor is not the head;************ ATTENTION ********* <<FIX THIS
 				if(conductor == head)
 				{
-					printf("Freed head\n");
 					head = NULL;
 					free(conductor);
 					conductor = NULL;
@@ -182,9 +174,9 @@ void manage_blasts()
 					// Free it
 				//	free(del);
 				//}
-			}	
+			}
 		}
-			
+
 		// If there is another blast move to it.
 		if(conductor && conductor->next)
 			conductor = conductor->next;

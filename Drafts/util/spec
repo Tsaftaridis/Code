@@ -1,0 +1,10 @@
+This is a project to assist with learning and long term information retention.
+
+Further down the road the goal is integration with a database and a pattern
+recognition tool, to make sense of the immense amounts of knowledge needed to
+operate as a doctor on a daily basis.
+
+First Goal: Set up a system for taking notes and automatically creating tests
+and quizzes from them.
+  This will involve scanning a text file for questions and answers, splitting
+  them in two files and saving them.

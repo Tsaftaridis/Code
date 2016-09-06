@@ -8,6 +8,10 @@
 #define RADIANS(x) (x)*PI/128
 #endif
 
+#ifndef NUM_OF_ASTEROIDS
+#define NUM_OF_ASTEROIDS 4
+#endif
+
 asteroid *root = NULL;
 asteroid *maestro = NULL;
 asteroid *artist = NULL;
@@ -136,10 +140,10 @@ void create_asteroid()
 
 void initialize_asteroids()
 {
-	create_asteroid();
-	create_asteroid();
-	create_asteroid();
-	create_asteroid();
+	for(int i = 0; i < NUM_OF_ASTEROIDS; i++)
+	{
+		create_asteroid();
+	}
 }
 
 void move_asteroids()

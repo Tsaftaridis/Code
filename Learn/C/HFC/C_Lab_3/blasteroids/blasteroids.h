@@ -11,6 +11,10 @@
 
 #define FPS 60
 
+#ifndef NUM_OF_ASTEROIDS
+#define NUM_OF_ASTEROIDS 4
+#endif
+
 typedef struct ALLEGRO_DISPLAY ALLEGRO_DISPLAY;
 typedef struct ALLEGRO_COND ALLEGRO_COND;
 

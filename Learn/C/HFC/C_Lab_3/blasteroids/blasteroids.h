@@ -8,6 +8,7 @@
 
 #include "asteroid.h"
 #include "blast.h"
+#include "structs.h"
 
 #define FPS 60
 
@@ -18,20 +19,6 @@
 typedef struct ALLEGRO_DISPLAY ALLEGRO_DISPLAY;
 typedef struct ALLEGRO_COND ALLEGRO_COND;
 
-typedef struct control
-{
-	bool doexit;
-	bool redraw;
-	bool no_events;
-}control;
-
-typedef struct data_t0
-{
-	control* myself;
-	ALLEGRO_DISPLAY *display_p;
-	int SCREEN_WIDTH;
-	int SCREEN_LENGTH;
-}data_t0;
 
 typedef struct data_t1
 {

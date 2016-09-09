@@ -3,6 +3,7 @@
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
+#include "structs.h"
 
 typedef struct asteroid
 {

@@ -19,6 +19,8 @@ static blast *conductor = NULL;
 static blast *painter = NULL;
 static blast *mover = NULL;
 
+int BLAST_NUM = 0;
+
 void draw_blasts()
 {
 	if(head)
@@ -97,9 +99,70 @@ void create_blast(spaceship *s)
 			conductor->next = NULL;
 		}
 	}
+	BLAST_NUM++;
 }
 
 void manage_blasts()
+{
+	int i = 0;
+	int j = 0;
+	conductor = head;
+	blast* prev = NULL;
+	prev = head;
+	while(conductor)
+	{
+		printf("\n\n");
+		if(conductor->gone == 0)
+		{
+			blast_coordinates[i][j] = conductor->sx;
+			blast_coordinates[i][j+1] = conductor->sy;
+			prev = conductor;
+		}
+		else if(conductor->gone == 1)
+		{
+			if(conductor->next)
+			{
+				if(conductor == head)
+				{
+					blast *del = head;
+					head = head->next;
+					del = conductor;
+					conductor = head;
+					free(del);
+					BLAST_NUM--;
+				}
+				else
+				{
+					blast *del = NULL;
+					prev->next = conductor->next;
+					del = conductor;
+					conductor = prev;
+					free(del);
+					BLAST_NUM--;
+				}
+			}
+			else
+			{
+				if(conductor == head)
+				{
+					head = NULL;
+					free(conductor);
+					BLAST_NUM--;
+					conductor = NULL;
+				}
+			}
+		}
+		if(conductor && conductor->next)
+			conductor = conductor->next;
+		else
+			break;
+		i++;
+	}
+	move_blast();
+}
+
+/*
+void manage_blasts(int coordinates[20][2])
 {
 	//TODEB
 	//Get the head and conductor;
@@ -185,4 +248,4 @@ void manage_blasts()
 			break;
 	}
 	move_blast();
-}
+}*/

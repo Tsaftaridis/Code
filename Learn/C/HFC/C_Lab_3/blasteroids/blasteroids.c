@@ -9,10 +9,16 @@ blast b;
 ALLEGRO_TIMER *timer;
 ALLEGRO_EVENT event;
 
+int blast_coordinates[20][2];
+int BLAST_NUM;
+
 int main(int argc, char **argb)
 {
 	if(!al_init())
 		error("Could not initialise Allegro5!\n");
+
+	if(!al_init_primitives_addon())
+		error("Could not initialise primitives_addon\n");
 // Set thread control data
 	threads.doexit = false;
 	threads.redraw = false;
@@ -88,6 +94,8 @@ int main(int argc, char **argb)
 		}
 		else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		{
+			printf("Should be closing down now...\n");
+			threads.doexit = true;
 			break;
 		}
 		else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -155,6 +163,18 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 	graph_vars->SCREEN_WIDTH = 1920;
 	graph_vars->SCREEN_LENGTH = 1080;
 
+	// Experimental code
+	/*ALLEGRO_DISPLAY_MODE display_data;
+
+	al_get_display_mode(al_get_num_display_modes() - 4 , &display_data);
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+
+	printf("%d, %d\n", display_data.width, display_data.height);
+	graph_vars->SCREEN_WIDTH = display_data.width;
+	graph_vars->SCREEN_WIDTH = display_data.height;
+	graph_vars->display_p = al_create_display(display_data.width, display_data.height);*/
+	// Experimental code end
+
 	graph_vars->display_p = al_create_display(graph_vars->SCREEN_WIDTH, graph_vars->SCREEN_LENGTH);
 
 	while(!threads.doexit)
@@ -201,6 +221,21 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			move_spaceship(&s);
 			manage_asteroids();
 			manage_blasts();
+
+			int i, j = 0;
+
+			// GET AND PRINT ALL THE COORDINATES OF THE BLASTS
+			for(i = 0; i < BLAST_NUM; i++)
+			{
+				printf("blast #%d: %d, %d\n", i, blast_coordinates[i][j], blast_coordinates[i][j+1]);
+			}
+
+
+			// GET AND PRINT ALL THE COORDINATS OF THE asteroid_coordinates
+			for(i = 0; i < NUM_OF_ASTEROIDS; i++)
+			{
+				printf("asteroid #%d: %d, %d\n", i, asteroid_coordinates[i][j], asteroid_coordinates[i][j+1]);
+			}
 		}
 	}
 	return NULL;

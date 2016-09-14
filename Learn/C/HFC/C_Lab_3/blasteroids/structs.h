@@ -15,6 +15,7 @@ typedef struct data_t0
 	int SCREEN_LENGTH;
 }data_t0;
 
+extern int SCORE;
 
 extern int BLAST_NUM;
 extern int NUM_OF_ASTEROIDS;

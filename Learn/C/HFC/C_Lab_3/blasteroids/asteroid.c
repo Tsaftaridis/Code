@@ -46,6 +46,7 @@ void manage_asteroids()
 					root = root->next;
 					del = maestro;
 					maestro = root;
+					NUM_OF_ASTEROIDS--;
 					free(del);
 				}
 				else
@@ -54,6 +55,7 @@ void manage_asteroids()
 					prev->next = maestro->next;
 					del = maestro;
 					maestro = prev;
+					NUM_OF_ASTEROIDS--;
 					free(del);
 				}
 			}
@@ -62,6 +64,7 @@ void manage_asteroids()
 				if(maestro == root)
 				{
 					root = NULL;
+					NUM_OF_ASTEROIDS--;
 					free(maestro);
 					maestro = NULL;
 				}
@@ -90,7 +93,6 @@ void draw_asteroids()
 			// Change the graphics depending on the screen size(the originals were created for 1080p display)
 			float change = SCREEN_H/1080;
 			float s = artist->scale;
-			printf("Change: %f\n", change);
 			s *= 2.5*change;
 			al_draw_line(-20*s, 20*s, -25*s, 5*s, artist->color, 4.0f);
 			al_draw_line(-25*s, 5*s, -25*s, -10*s, artist->color, 4.0f);
@@ -217,48 +219,53 @@ int randint(int n)
 
 void asteroid_break(int n)
 {
-	int i = 0;
-	breaker = root;
-	for(i = 0; i < n-1; i++)
+	if(root)
 	{
-		breaker = breaker->next;
-	}
-	if(!breaker->to_go)
-	{
-		float start_point_x = breaker->sx;
-		float start_point_y = breaker->sy;
-		float start_point_heading = breaker->heading;
-		float start_point_twist = breaker->twist;
-		float start_point_speed = breaker->speed;
-
-		breaker->scale = 0.5;
-		breaker->heading += 20;
-		breaker->ang_velocity *= 2;
-		breaker->to_go = 1;
-
-		create_asteroid();
-
-		// The asteroid created will be the last. Move to it and change the properties
-		for(i = 0; i < NUM_OF_ASTEROIDS - n; i++)
+		int i = 0;
+		breaker = root;
+		for(i = 0; i < n-1; i++)
 		{
 			breaker = breaker->next;
 		}
+		if(!breaker->to_go)
+		{
+			float start_point_x = breaker->sx;
+			float start_point_y = breaker->sy;
+			float start_point_heading = breaker->heading;
+			float start_point_twist = breaker->twist;
+			float start_point_speed = breaker->speed;
 
-		// The default scale is 1, so we change it by half
-		breaker->scale = 0.5;
-		// All the other data is created randomly in the create_asteroid function,
-		// but we can change it immediately.
-		breaker->sx = start_point_x;
-		breaker->sy = start_point_y;
-		breaker->speed = start_point_speed;
-		breaker->twist = start_point_twist;
-		breaker->ang_velocity *= -2;
-		breaker->heading  = start_point_heading - 20;
+			breaker->scale = 0.5;
+			breaker->heading += 20;
+			breaker->ang_velocity *= 2;
+			breaker->to_go = 1;
 
-		breaker = NULL;
-	}
-	else
-	{
-		breaker->gone = 1;
+			create_asteroid();
+			NUM_OF_ASTEROIDS++;
+			// The asteroid created will be the last. Move to it and change the properties
+			for(i = 0; i < NUM_OF_ASTEROIDS - n; i++)
+			{
+				breaker = breaker->next;
+			}
+
+			// The default scale is 1, so we change it by half
+			breaker->scale = 0.5;
+			// All the other data is created randomly in the create_asteroid function,
+			// but we can change it immediately.
+			breaker->sx = start_point_x;
+			breaker->sy = start_point_y;
+			breaker->speed = start_point_speed;
+			breaker->twist = start_point_twist;
+			breaker->ang_velocity *= -2;
+			breaker->heading  = start_point_heading - 20;
+			breaker->to_go = 1;
+
+			breaker = NULL;
+		}
+		else
+		{
+			breaker->gone = 1;
+			breaker = NULL;
+		}
 	}
 }

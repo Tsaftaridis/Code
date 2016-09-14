@@ -1,10 +1,11 @@
 #include "blasteroids.h"
 
-#define AST_RADIUS 100
+#define AST_RADIUS 80
 #define SP_RADIUS	20
 
 float SCREEN_W = 720;
 float SCREEN_H = 567;
+int SCORE = 0;
 
 data_t0 graphics_variables;
 data_t1 objects_variables;
@@ -14,6 +15,7 @@ blast b;
 
 ALLEGRO_TIMER *timer;
 ALLEGRO_EVENT event;
+ALLEGRO_FONT *font;
 
 int blast_coordinates[20][2];
 int BLAST_NUM;
@@ -25,6 +27,12 @@ int main(int argc, char **argb)
 
 	if(!al_init_primitives_addon())
 		error("Could not initialise primitives_addon\n");
+
+	if(!al_init_font_addon())
+		error("Could not initialise primitives_addon\n");
+
+	if(!al_init_ttf_addon())
+		error("Could not initialise ttf_addon\n");
 // Set thread control data
 	threads.doexit = false;
 	threads.redraw = false;
@@ -175,6 +183,9 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 	graph_vars->SCREEN_WIDTH = SCREEN_W;
 	graph_vars->SCREEN_LENGTH = SCREEN_H;
 
+
+	font = al_load_font("Xenophobia.ttf", 80, 0);
+
 	// Experimental code
 	/*ALLEGRO_DISPLAY_MODE display_data;
 
@@ -193,10 +204,19 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 	{
 		if(threads.redraw)
 		{
+			char *score_string;
+			sprintf(score_string, "%d", SCORE);
+			printf("%s\n", score_string);
+
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			draw_spaceship(objects_variables.s_p);
 			draw_asteroids();
 			draw_blasts();
+			ALLEGRO_TRANSFORM transformer;
+			al_identity_transform(&transformer);
+			al_use_transform(&transformer);
+			al_draw_text(font, al_map_rgb(200, 200, 200), 50, 50, 0, score_string);
+
 			al_flip_display();
 		}
 	}
@@ -250,8 +270,10 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 						float dist_blast_ast = sqrt(pow((ax-bx), 2) + pow((ay - by), 2));
 						if(dist_blast_ast < AST_RADIUS)
 						{
+							printf("Running");
 							asteroid_break(k);
 							blast_hit(i);
+							SCORE += 100;
 						}
 					}
 				}
@@ -266,8 +288,8 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 					float ay = asteroid_coordinates[i][j+1];
 
 					float dist_spaceship_ast = sqrt(pow((s.sx - ax), 2) + pow((s.sy - ay), 2));
-					if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
-						printf("Crash!");
+					//if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
+					//	printf("Crash!");
 				}
 			}
 		}

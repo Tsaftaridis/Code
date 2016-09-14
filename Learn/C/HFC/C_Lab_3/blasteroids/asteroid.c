@@ -243,7 +243,7 @@ void asteroid_break(int n)
 			create_asteroid();
 			NUM_OF_ASTEROIDS++;
 			// The asteroid created will be the last. Move to it and change the properties
-			for(i = 0; i < NUM_OF_ASTEROIDS - n; i++)
+			for(i = 0; i < NUM_OF_ASTEROIDS - n - 1; i++)
 			{
 				breaker = breaker->next;
 			}

@@ -1,10 +1,10 @@
 #include "blasteroids.h"
 
-#define AST_RADIUS 80
-#define SP_RADIUS	20
+#define AST_RADIUS 80*720/1080
+#define SP_RADIUS	20*720/1080
 
-float SCREEN_W = 720;
-float SCREEN_H = 567;
+float SCREEN_W = 1920;
+float SCREEN_H = 1080;
 int SCORE = 0;
 
 data_t0 graphics_variables;
@@ -156,13 +156,7 @@ int main(int argc, char **argb)
 				case ALLEGRO_KEY_ESCAPE:
 				threads.doexit = true;
 				break;
-#ifndef SCREEN
-#define SCREEN
 
-#define SCREEN_W	720
-#define SCREEN_H 	567
-
-#endif
 				case ALLEGRO_KEY_SPACE:
 				create_blast(&s);
 				break;
@@ -278,7 +272,6 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 					}
 				}
 			}
-
 
 			if(NUM_OF_ASTEROIDS)
 			{

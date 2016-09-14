@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_primitives.h>
@@ -15,6 +16,7 @@ typedef struct asteroid
 	float ang_velocity;
 	float scale;
 	int gone;
+	int to_go;
 	ALLEGRO_COLOR color;
 	struct asteroid *next;
 }asteroid;

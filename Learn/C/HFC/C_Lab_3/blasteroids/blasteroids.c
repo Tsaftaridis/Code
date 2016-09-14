@@ -3,6 +3,9 @@
 #define AST_RADIUS 100
 #define SP_RADIUS	20
 
+float SCREEN_W = 720;
+float SCREEN_H = 567;
+
 data_t0 graphics_variables;
 data_t1 objects_variables;
 control threads;
@@ -145,7 +148,13 @@ int main(int argc, char **argb)
 				case ALLEGRO_KEY_ESCAPE:
 				threads.doexit = true;
 				break;
+#ifndef SCREEN
+#define SCREEN
 
+#define SCREEN_W	720
+#define SCREEN_H 	567
+
+#endif
 				case ALLEGRO_KEY_SPACE:
 				create_blast(&s);
 				break;
@@ -163,8 +172,8 @@ int main(int argc, char **argb)
 void *graphics(ALLEGRO_THREAD *thread, void *vars)
 {
 	data_t0 *graph_vars = (data_t0 *) vars;
-	graph_vars->SCREEN_WIDTH = 1920;
-	graph_vars->SCREEN_LENGTH = 1080;
+	graph_vars->SCREEN_WIDTH = SCREEN_W;
+	graph_vars->SCREEN_LENGTH = SCREEN_H;
 
 	// Experimental code
 	/*ALLEGRO_DISPLAY_MODE display_data;
@@ -239,7 +248,6 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 						float ax = asteroid_coordinates[k][j];
 						float ay = asteroid_coordinates[k][j+1];
 						float dist_blast_ast = sqrt(pow((ax-bx), 2) + pow((ay - by), 2));
-							//printf("Distance: %f\n", distance);
 						if(dist_blast_ast < AST_RADIUS)
 						{
 							asteroid_break(k);
@@ -258,8 +266,7 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 
 					float dist_spaceship_ast = sqrt(pow((s.sx - ax), 2) + pow((s.sy - ay), 2));
 					if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
-						//printf("distance:%f\nradius: %d\n", dist_spaceship_ast, SP_RADIUS+AST_RADIUS);
-						printf("Crash!\n");
+						printf("Crash!");
 				}
 			}
 		}

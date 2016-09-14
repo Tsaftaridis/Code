@@ -3,6 +3,7 @@
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
+#include "structs.h"
 
 #define PI 3.14
 #define RADIANS(x) x*PI/128
@@ -21,7 +22,7 @@ typedef struct
 	vector current;
 	vector old;
 	bool gone;
-	ALLEGRO_COLOR color;	
+	ALLEGRO_COLOR color;
 } spaceship;
 
 void draw_spaceship(spaceship *s);

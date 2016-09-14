@@ -20,5 +20,8 @@ extern int NUM_OF_ASTEROIDS;
 extern int asteroid_coordinates[10][2];
 extern int blast_coordinates[20][2];
 
+extern float SCREEN_W;
+extern float SCREEN_H;
+
 extern data_t0 graphics_variables;
 #endif

@@ -3,14 +3,20 @@
 #define MAX_SPEED (float)10//120 pixels per second, 2 pixels per frame, 0.2 pixels per timer tick...
 #define AL_DEG_STEP (float)256/150//256 al_deg per second, 256/20 al_deg per frame, 256/200 al_deg per timer tick...
 
+float SCREEN_W;
+
+data_t0 graphics_variables;
+
 void draw_spaceship(spaceship* s)
 {
-	float n = 0.4; // Drawing scale.
 	ALLEGRO_TRANSFORM tr;
 	al_identity_transform(&tr);
 	al_rotate_transform(&tr, RADIANS(s->current.allegro_degrees));
 	al_translate_transform(&tr, s->sx, s->sy);
 	al_use_transform(&tr);
+	// Change the graphics depending on the screen size(the originals were created for 1080p display)
+	float change = SCREEN_W/1080;
+	float n = 0.4*change; // Drawing scale.
 	al_draw_line(-80*n, 90*n, 0*n, -110*n, s->color, n*8.0f);
 	al_draw_line(0*n, -110*n, 80*n, 90*n, s->color, n*8.0f);
 	al_draw_line(-60*n, 40*n, -10*n, 40*n, s->color, n*8.0f);
@@ -66,18 +72,18 @@ void move_spaceship(spaceship *s)
 
 	if(s->sx < 0)
 	{
-		s->sx = 1920;
+		s->sx = graphics_variables.SCREEN_WIDTH;
 	}
-	else if(s->sx > 1920)
+	else if(s->sx > graphics_variables.SCREEN_WIDTH)
 	{
 		s->sx = 0;
 	}
 
 	if(s->sy < 0)
 	{
-		s->sy = 1080;
+		s->sy = graphics_variables.SCREEN_LENGTH;
 	}
-	else if(s->sy > 1080)
+	else if(s->sy > graphics_variables.SCREEN_LENGTH)
 	{
 		s->sy = 0;
 	}

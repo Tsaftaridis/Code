@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_color.h>
 #include <allegro5/allegro_image.h>
@@ -13,6 +14,8 @@
 #ifndef RADIANS
 #define RADIANS(x)  x*PI/128
 #endif
+
+float SCREEN_W;
 
 static blast *head = NULL;
 static blast *conductor = NULL;
@@ -35,7 +38,8 @@ void draw_blasts()
 				al_identity_transform(&t);
 				al_translate_transform(&t, painter->sx, painter->sy);
 				al_use_transform(&t);
-				al_draw_line(0, 0, 1, 12, painter->color, 10.0f);
+				float adjust = SCREEN_W/1080;
+				al_draw_line(0, 0, 1*adjust, 12*adjust, painter->color, adjust*10.0f);
 			}
 		}while((painter = painter->next));
 	}

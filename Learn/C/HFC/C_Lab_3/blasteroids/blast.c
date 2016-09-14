@@ -18,6 +18,9 @@ static blast *head = NULL;
 static blast *conductor = NULL;
 static blast *painter = NULL;
 static blast *mover = NULL;
+static blast *hitter = NULL;
+
+int BLAST_NUM = 0;
 
 void draw_blasts()
 {
@@ -97,9 +100,83 @@ void create_blast(spaceship *s)
 			conductor->next = NULL;
 		}
 	}
+	BLAST_NUM++;
 }
 
 void manage_blasts()
+{
+	int i = 0, j = 0;
+	conductor = head;
+	blast* prev = NULL;
+	prev = head;
+	while(conductor)
+	{
+		if(conductor->gone == 0)
+		{
+			blast_coordinates[i][j] = conductor->sx;
+			blast_coordinates[i][j+1] = conductor->sy;
+			prev = conductor;
+		}
+		else if(conductor->gone == 1)
+		{
+			if(conductor->next)
+			{
+				if(conductor == head)
+				{
+					blast *del = head;
+					head = head->next;
+					del = conductor;
+					conductor = head;
+					free(del);
+					BLAST_NUM--;
+				}
+				else
+				{
+					blast *del = NULL;
+					prev->next = conductor->next;
+					del = conductor;
+					conductor = prev;
+					free(del);
+					BLAST_NUM--;
+				}
+			}
+			else
+			{
+				if(conductor == head)
+				{
+					head = NULL;
+					free(conductor);
+					BLAST_NUM--;
+					conductor = NULL;
+				}
+			}
+		}
+		if(conductor && conductor->next)
+			conductor = conductor->next;
+		else
+			break;
+		i++;
+	}
+	move_blast();
+}
+
+// Removes blasts that have hit an asteroid
+void blast_hit(int blast_num)
+{
+	int i;
+	hitter = head;
+	// Move to the n'th blast (starting from 0)
+	for(i = 0; i < blast_num; i++)
+	{
+		hitter = hitter->next;
+	}
+	// Set it to be deleted
+	hitter->gone = 1;
+	hitter = NULL;
+}
+
+/*
+void manage_blasts(int coordinates[20][2])
 {
 	//TODEB
 	//Get the head and conductor;
@@ -185,4 +262,4 @@ void manage_blasts()
 			break;
 	}
 	move_blast();
-}
+}*/

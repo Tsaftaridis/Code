@@ -8,28 +8,32 @@
 #define RADIANS(x) (x)*PI/128
 #endif
 
-#ifndef NUM_OF_ASTEROIDS
-#define NUM_OF_ASTEROIDS 4
-#endif
+int NUM_OF_ASTEROIDS = 4;
+int asteroid_coordinates[10][2];
 
 asteroid *root = NULL;
 asteroid *maestro = NULL;
 asteroid *artist = NULL;
 asteroid *shaker = NULL;
+asteroid *breaker = NULL;
+
+data_t0 graphics_variables;
 
 void manage_asteroids()
 {
 	maestro = root;
 	asteroid *prev = NULL;
 	prev = root;
+	int i = 0, j = 0;
 
 	while(maestro)
 	{
 		if(maestro->gone == 0)
 		{
 			prev = maestro;
+			asteroid_coordinates[i][j] = maestro->sx;
+			asteroid_coordinates[i][j+1] = maestro->sy;
 		}
-
 		else if(maestro->gone == 1)
 		{
 			if(maestro->next)
@@ -65,6 +69,7 @@ void manage_asteroids()
 			maestro = maestro->next;
 		else
 			break;
+	i++;
 	}
 	move_asteroids();
 }
@@ -104,7 +109,7 @@ void create_asteroid()
 	{
 			root = malloc(sizeof(struct asteroid));
 			root->sx = 0;
-			root->sy = randint(1080);
+			root->sy = randint(graphics_variables.SCREEN_WIDTH);
 			root->next = NULL;
 			root->heading = randint(255);
 			root->speed = randint(10)+1;
@@ -126,7 +131,7 @@ void create_asteroid()
 		maestro = maestro->next;
 
 		maestro->sx = 0;
-		maestro->sy = randint(1080);
+		maestro->sy = randint(graphics_variables.SCREEN_WIDTH);
 		maestro->next = NULL;
 		maestro->heading = randint(255);
 		maestro->speed = randint(10) + 1;
@@ -155,26 +160,23 @@ void move_asteroids()
 			shaker->sx += shaker->speed*cos(RADIANS(shaker->heading));
 			shaker->sy -= shaker->speed*sin(RADIANS(shaker->heading));
 			shaker->twist += shaker->ang_velocity;
-			if(shaker->sx > 1920)
+			// The readings are actually SCREEN_LENGTH: 1080; SCREEN_WIDTH: 1920;
+			if(shaker->sx > graphics_variables.SCREEN_WIDTH)
 				{
-					shaker->sy = 1080;
-					//shaker->gone = 1;
-					//create_asteroid();
+					shaker->sy = 0;
 				}
 				else if(shaker->sx < 0)
 				{
-					shaker->sx = 1920;
-					//shaker->gone = 1;
-					//create_asteroid();
+					shaker->sx = graphics_variables.SCREEN_WIDTH;
 				}
 
-				if(shaker->sy > 1080)
+				if(shaker->sy > graphics_variables.SCREEN_LENGTH)
 				{
 					shaker->sy = 0;
 				}
 				else if(shaker->sy < 0)
 				{
-					shaker->sy = 1080;
+					shaker->sy = graphics_variables.SCREEN_LENGTH;
 				}
 		}while((shaker = shaker->next));
 	}
@@ -196,4 +198,17 @@ int randint(int n)
     while((r = rand())>= end);
     return r%n;
   }
+}
+
+void asteroid_break(int n)
+{
+	int i = 0;
+	breaker = root;
+	for(i = 0; i < n; i++)
+	{
+		breaker = breaker->next;
+	}
+
+	breaker->scale = breaker->scale/2;
+	breaker = NULL;
 }

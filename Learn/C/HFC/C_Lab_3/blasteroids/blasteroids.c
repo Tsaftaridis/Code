@@ -1,5 +1,8 @@
 #include "blasteroids.h"
 
+#define AST_RADIUS 100
+#define SP_RADIUS	20
+
 data_t0 graphics_variables;
 data_t1 objects_variables;
 control threads;
@@ -9,10 +12,16 @@ blast b;
 ALLEGRO_TIMER *timer;
 ALLEGRO_EVENT event;
 
+int blast_coordinates[20][2];
+int BLAST_NUM;
+
 int main(int argc, char **argb)
 {
 	if(!al_init())
 		error("Could not initialise Allegro5!\n");
+
+	if(!al_init_primitives_addon())
+		error("Could not initialise primitives_addon\n");
 // Set thread control data
 	threads.doexit = false;
 	threads.redraw = false;
@@ -88,6 +97,8 @@ int main(int argc, char **argb)
 		}
 		else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 		{
+			printf("Should be closing down now...\n");
+			threads.doexit = true;
 			break;
 		}
 		else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -155,6 +166,18 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 	graph_vars->SCREEN_WIDTH = 1920;
 	graph_vars->SCREEN_LENGTH = 1080;
 
+	// Experimental code
+	/*ALLEGRO_DISPLAY_MODE display_data;
+
+	al_get_display_mode(al_get_num_display_modes() - 4 , &display_data);
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+
+	printf("%d, %d\n", display_data.width, display_data.height);
+	graph_vars->SCREEN_WIDTH = display_data.width;
+	graph_vars->SCREEN_WIDTH = display_data.height;
+	graph_vars->display_p = al_create_display(display_data.width, display_data.height);*/
+	// Experimental code end
+
 	graph_vars->display_p = al_create_display(graph_vars->SCREEN_WIDTH, graph_vars->SCREEN_LENGTH);
 
 	while(!threads.doexit)
@@ -201,6 +224,44 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			move_spaceship(&s);
 			manage_asteroids();
 			manage_blasts();
+
+			int i = 0, j = 0, k = 0;
+
+			// Compare distances of blasts and asteroids to detect collisions
+			if(BLAST_NUM)
+			{
+				for(i = 0; i < BLAST_NUM; i++)
+				{
+					int bx = blast_coordinates[i][j];
+					int by = blast_coordinates[i][j+1];
+					for(k = 0; k < NUM_OF_ASTEROIDS; k++)
+					{
+						float ax = asteroid_coordinates[k][j];
+						float ay = asteroid_coordinates[k][j+1];
+						float dist_blast_ast = sqrt(pow((ax-bx), 2) + pow((ay - by), 2));
+							//printf("Distance: %f\n", distance);
+						if(dist_blast_ast < AST_RADIUS)
+						{
+							asteroid_break(k);
+							blast_hit(i);
+						}
+					}
+				}
+			}
+
+			if(NUM_OF_ASTEROIDS)
+			{
+				for(i = 0; i < NUM_OF_ASTEROIDS; i++)
+				{
+					float ax = asteroid_coordinates[i][j];
+					float ay = asteroid_coordinates[i][j+1];
+
+					float dist_spaceship_ast = sqrt(pow((s.sx - ax), 2) + pow((s.sy - ay), 2));
+					if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
+						//printf("distance:%f\nradius: %d\n", dist_spaceship_ast, SP_RADIUS+AST_RADIUS);
+						printf("Crash!\n");
+				}
+			}
 		}
 	}
 	return NULL;

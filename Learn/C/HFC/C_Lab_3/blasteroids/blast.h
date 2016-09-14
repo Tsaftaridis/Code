@@ -1,4 +1,5 @@
 #include "spaceship.h"
+#include "structs.h"
 #define PI 3.14
 #define RADIANS(x) x*PI/128
 
@@ -17,3 +18,8 @@ void draw_blasts();
 void move_blast();
 void create_blast(spaceship *s);
 void manage_blasts();
+// Removes blasts that have hit an asteroid
+void blast_hit(int blast_num);
+
+
+int blast_coordinates[20][2];

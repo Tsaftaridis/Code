@@ -107,6 +107,7 @@ void create_blast(spaceship *s)
 	BLAST_NUM++;
 }
 
+
 void manage_blasts()
 {
 	int i = 0, j = 0;

@@ -21,6 +21,7 @@ typedef struct asteroid
 	struct asteroid *next;
 }asteroid;
 
+
 void draw_asteroids();
 void create_asteroid();
 void initialize_asteroids();

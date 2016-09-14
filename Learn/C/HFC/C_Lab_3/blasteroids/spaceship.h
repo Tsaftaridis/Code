@@ -25,6 +25,7 @@ typedef struct
 	ALLEGRO_COLOR color;
 } spaceship;
 
+
 void draw_spaceship(spaceship *s);
 void accelerate_spaceship(spaceship *s);
 void decelerate_spaceship(spaceship* s);

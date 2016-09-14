@@ -257,6 +257,7 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 				}
 			}
 
+
 			if(NUM_OF_ASTEROIDS)
 			{
 				for(i = 0; i < NUM_OF_ASTEROIDS; i++)

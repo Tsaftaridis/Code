@@ -21,5 +21,4 @@ void manage_blasts();
 // Removes blasts that have hit an asteroid
 void blast_hit(int blast_num);
 
-
 int blast_coordinates[20][2];

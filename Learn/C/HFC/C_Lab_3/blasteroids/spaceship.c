@@ -79,6 +79,7 @@ void move_spaceship(spaceship *s)
 		s->sx = 0;
 	}
 
+
 	if(s->sy < 0)
 	{
 		s->sy = graphics_variables.SCREEN_LENGTH;

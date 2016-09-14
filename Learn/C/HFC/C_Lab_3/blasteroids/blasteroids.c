@@ -1,5 +1,8 @@
 #include "blasteroids.h"
 
+#define AST_RADIUS 100
+#define SP_RADIUS	20
+
 data_t0 graphics_variables;
 data_t1 objects_variables;
 control threads;
@@ -222,19 +225,42 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			manage_asteroids();
 			manage_blasts();
 
-			int i, j = 0;
+			int i = 0, j = 0, k = 0;
 
-			// GET AND PRINT ALL THE COORDINATES OF THE BLASTS
-			for(i = 0; i < BLAST_NUM; i++)
+			// Compare distances of blasts and asteroids to detect collisions
+			if(BLAST_NUM)
 			{
-				printf("blast #%d: %d, %d\n", i, blast_coordinates[i][j], blast_coordinates[i][j+1]);
+				for(i = 0; i < BLAST_NUM; i++)
+				{
+					int bx = blast_coordinates[i][j];
+					int by = blast_coordinates[i][j+1];
+					for(k = 0; k < NUM_OF_ASTEROIDS; k++)
+					{
+						float ax = asteroid_coordinates[k][j];
+						float ay = asteroid_coordinates[k][j+1];
+						float dist_blast_ast = sqrt(pow((ax-bx), 2) + pow((ay - by), 2));
+							//printf("Distance: %f\n", distance);
+						if(dist_blast_ast < AST_RADIUS)
+						{
+							asteroid_break(k);
+							blast_hit(i);
+						}
+					}
+				}
 			}
 
-
-			// GET AND PRINT ALL THE COORDINATS OF THE asteroid_coordinates
-			for(i = 0; i < NUM_OF_ASTEROIDS; i++)
+			if(NUM_OF_ASTEROIDS)
 			{
-				printf("asteroid #%d: %d, %d\n", i, asteroid_coordinates[i][j], asteroid_coordinates[i][j+1]);
+				for(i = 0; i < NUM_OF_ASTEROIDS; i++)
+				{
+					float ax = asteroid_coordinates[i][j];
+					float ay = asteroid_coordinates[i][j+1];
+
+					float dist_spaceship_ast = sqrt(pow((s.sx - ax), 2) + pow((s.sy - ay), 2));
+					if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
+						//printf("distance:%f\nradius: %d\n", dist_spaceship_ast, SP_RADIUS+AST_RADIUS);
+						printf("Crash!\n");
+				}
 			}
 		}
 	}

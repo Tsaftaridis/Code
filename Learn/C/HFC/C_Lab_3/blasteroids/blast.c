@@ -18,6 +18,7 @@ static blast *head = NULL;
 static blast *conductor = NULL;
 static blast *painter = NULL;
 static blast *mover = NULL;
+static blast *hitter = NULL;
 
 int BLAST_NUM = 0;
 
@@ -104,14 +105,12 @@ void create_blast(spaceship *s)
 
 void manage_blasts()
 {
-	int i = 0;
-	int j = 0;
+	int i = 0, j = 0;
 	conductor = head;
 	blast* prev = NULL;
 	prev = head;
 	while(conductor)
 	{
-		printf("\n\n");
 		if(conductor->gone == 0)
 		{
 			blast_coordinates[i][j] = conductor->sx;
@@ -159,6 +158,21 @@ void manage_blasts()
 		i++;
 	}
 	move_blast();
+}
+
+// Removes blasts that have hit an asteroid
+void blast_hit(int blast_num)
+{
+	int i;
+	hitter = head;
+	// Move to the n'th blast (starting from 0)
+	for(i = 0; i < blast_num; i++)
+	{
+		hitter = hitter->next;
+	}
+	// Set it to be deleted
+	hitter->gone = 1;
+	hitter = NULL;
 }
 
 /*

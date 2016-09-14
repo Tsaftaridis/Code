@@ -25,3 +25,5 @@ void initialize_asteroids();
 void move_asteroids();
 void manage_asteroids();
 int randint(int n);
+// Hanlde asteroids that are hit by a blast
+void asteroid_break(int n);

@@ -15,6 +15,7 @@ asteroid *root = NULL;
 asteroid *maestro = NULL;
 asteroid *artist = NULL;
 asteroid *shaker = NULL;
+asteroid *breaker = NULL;
 
 data_t0 graphics_variables;
 
@@ -23,11 +24,10 @@ void manage_asteroids()
 	maestro = root;
 	asteroid *prev = NULL;
 	prev = root;
-	int i, j = 0;
+	int i = 0, j = 0;
 
 	while(maestro)
 	{
-		printf("\n\n");
 		if(maestro->gone == 0)
 		{
 			prev = maestro;
@@ -198,4 +198,17 @@ int randint(int n)
     while((r = rand())>= end);
     return r%n;
   }
+}
+
+void asteroid_break(int n)
+{
+	int i = 0;
+	breaker = root;
+	for(i = 0; i < n; i++)
+	{
+		breaker = breaker->next;
+	}
+
+	breaker->scale = breaker->scale/2;
+	breaker = NULL;
 }

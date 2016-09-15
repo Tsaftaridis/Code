@@ -38,7 +38,7 @@ void draw_blasts()
 				al_identity_transform(&t);
 				al_translate_transform(&t, painter->sx, painter->sy);
 				al_use_transform(&t);
-				float adjust = SCREEN_W/1080;
+				float adjust = 0.5*SCREEN_W/1080;
 				al_draw_line(0, 0, 1*adjust, 12*adjust, painter->color, adjust*10.0f);
 			}
 		}while((painter = painter->next));

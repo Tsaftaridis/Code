@@ -8,7 +8,7 @@
 #define RADIANS(x) (x)*PI/128
 #endif
 
-int NUM_OF_ASTEROIDS = 1;
+int NUM_OF_ASTEROIDS = 2;
 int asteroid_coordinates[10][2];
 
 float SCREEN_W, SCREEN_H;
@@ -20,6 +20,7 @@ asteroid *shaker = NULL;
 asteroid *breaker = NULL;
 
 data_t0 graphics_variables;
+int SCORE;
 
 void manage_asteroids()
 {
@@ -68,6 +69,14 @@ void manage_asteroids()
 					free(maestro);
 					maestro = NULL;
 				}
+				else
+				{
+					printf("Dis is Roniing\n");
+					asteroid *del = NULL;
+					prev->next = NULL;
+					free(maestro);
+					maestro = NULL;
+				}
 			}
 		}
 		if(maestro && maestro->next)
@@ -93,7 +102,7 @@ void draw_asteroids()
 			// Change the graphics depending on the screen size(the originals were created for 1080p display)
 			float change = SCREEN_H/1080;
 			float s = artist->scale;
-			s *= 2.5*change;
+			s *= 2*change;
 			al_draw_line(-20*s, 20*s, -25*s, 5*s, artist->color, 4.0f);
 			al_draw_line(-25*s, 5*s, -25*s, -10*s, artist->color, 4.0f);
 			al_draw_line(-20*s, -10*s, -5*s, -10*s, artist->color, 4.0f);
@@ -180,7 +189,7 @@ void move_asteroids()
 			//                 SCREEN_WIDTH-/
 			if(shaker->sx > graphics_variables.SCREEN_WIDTH)
 				{
-					shaker->sy = 0;
+					shaker->sx = 0;
 				}
 				else if(shaker->sx < 0)
 				{
@@ -223,10 +232,11 @@ void asteroid_break(int n)
 	{
 		int i = 0;
 		breaker = root;
-		for(i = 0; i < n-1; i++)
+		for(i = 0; i < n; i++)
 		{
 			breaker = breaker->next;
 		}
+		printf("i: %d\n", i);
 		if(!breaker->to_go)
 		{
 			float start_point_x = breaker->sx;
@@ -238,6 +248,9 @@ void asteroid_break(int n)
 			breaker->scale = 0.5;
 			breaker->heading += 20;
 			breaker->ang_velocity *= 2;
+			printf("Splitting #%d\n", i);
+			SCORE+=100;
+
 			breaker->to_go = 1;
 
 			create_asteroid();
@@ -264,7 +277,10 @@ void asteroid_break(int n)
 		}
 		else
 		{
+			printf("Deleting #%d\n", i);
+			SCORE+= 100;
 			breaker->gone = 1;
+			printf("Is %d gone?: %d\n", i, breaker->gone);
 			breaker = NULL;
 		}
 	}

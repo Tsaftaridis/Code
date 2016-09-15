@@ -177,7 +177,6 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 	graph_vars->SCREEN_WIDTH = SCREEN_W;
 	graph_vars->SCREEN_LENGTH = SCREEN_H;
 
-
 	font = al_load_font("Xenophobia.ttf", 80, 0);
 
 	// Experimental code
@@ -200,7 +199,7 @@ void *graphics(ALLEGRO_THREAD *thread, void *vars)
 		{
 			char *score_string;
 			sprintf(score_string, "%d", SCORE);
-			printf("%s\n", score_string);
+			//printf("%s\n", score_string);
 
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 			draw_spaceship(objects_variables.s_p);
@@ -249,7 +248,6 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			manage_blasts();
 
 			int i = 0, j = 0, k = 0;
-
 			// Compare distances of blasts and asteroids to detect collisions
 			if(BLAST_NUM)
 			{
@@ -264,10 +262,9 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 						float dist_blast_ast = sqrt(pow((ax-bx), 2) + pow((ay - by), 2));
 						if(dist_blast_ast < AST_RADIUS)
 						{
-							printf("Running");
+							printf("Detected #%d\n", k);
 							asteroid_break(k);
 							blast_hit(i);
-							SCORE += 100;
 						}
 					}
 				}

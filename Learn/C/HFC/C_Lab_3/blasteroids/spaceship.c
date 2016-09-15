@@ -16,7 +16,7 @@ void draw_spaceship(spaceship* s)
 	al_use_transform(&tr);
 	// Change the graphics depending on the screen size(the originals were created for 1080p display)
 	float change = SCREEN_W/1080;
-	float n = 0.4*change; // Drawing scale.
+	float n = 0.2*change; // Drawing scale.
 	al_draw_line(-80*n, 90*n, 0*n, -110*n, s->color, n*8.0f);
 	al_draw_line(0*n, -110*n, 80*n, 90*n, s->color, n*8.0f);
 	al_draw_line(-60*n, 40*n, -10*n, 40*n, s->color, n*8.0f);

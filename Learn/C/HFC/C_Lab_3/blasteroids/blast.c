@@ -124,6 +124,8 @@ void manage_blasts()
 		}
 		else if(conductor->gone == 1)
 		{
+			//conductor->sx = -300;
+			//conductor->sy = -300;
 			if(conductor->next)
 			{
 				if(conductor == head)

@@ -19,7 +19,7 @@ extern int SCORE;
 
 extern int BLAST_NUM;
 extern int NUM_OF_ASTEROIDS;
-extern int asteroid_coordinates[10][2];
+extern int asteroid_coordinates[1000][2];
 extern int blast_coordinates[20][2];
 
 extern float SCREEN_W;

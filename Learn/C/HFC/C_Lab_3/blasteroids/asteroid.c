@@ -9,7 +9,7 @@
 #endif
 
 int NUM_OF_ASTEROIDS = 2;
-int asteroid_coordinates[10][2];
+int asteroid_coordinates[1000][2];
 
 float SCREEN_W, SCREEN_H;
 
@@ -66,14 +66,6 @@ void manage_asteroids()
 				{
 					root = NULL;
 					NUM_OF_ASTEROIDS--;
-					free(maestro);
-					maestro = NULL;
-				}
-				else
-				{
-					printf("Dis is Roniing\n");
-					asteroid *del = NULL;
-					prev->next = NULL;
 					free(maestro);
 					maestro = NULL;
 				}
@@ -230,14 +222,50 @@ void asteroid_break(int n)
 {
 	if(root)
 	{
-		int i = 0;
+		int i;
 		breaker = root;
 		for(i = 0; i < n; i++)
 		{
 			breaker = breaker->next;
 		}
-		printf("i: %d\n", i);
-		if(!breaker->to_go)
+
+		float start_point_x = breaker->sx;
+		float start_point_y = breaker->sy;
+		float start_point_heading = breaker->heading;
+		float start_point_twist = breaker->twist;
+		float start_point_speed = breaker->speed;
+
+		breaker->scale = 0.5;
+		breaker->heading += 20;
+		breaker->ang_velocity *= 2;
+		printf("Splitting #%d\n", i);
+		SCORE+=100;
+
+		breaker->to_go = 1;
+
+		create_asteroid();
+		NUM_OF_ASTEROIDS++;
+		// The asteroid created will be the last. Move to it and change the properties
+		for(i = 0; i < NUM_OF_ASTEROIDS - n - 1; i++)
+		{
+			breaker = breaker->next;
+		}
+
+		// The default scale is 1, so we change it by half
+		breaker->scale = 0.5;
+		// All the other data is created randomly in the create_asteroid function,
+		// but we can change it immediately.
+		breaker->sx = start_point_x;
+		breaker->sy = start_point_y;
+		breaker->speed = start_point_speed;
+		breaker->twist = start_point_twist;
+		breaker->ang_velocity *= -2;
+		breaker->heading  = start_point_heading - 20;
+		breaker->to_go = 1;
+
+		breaker = NULL;
+
+		/*if(!breaker->to_go)
 		{
 			float start_point_x = breaker->sx;
 			float start_point_y = breaker->sy;
@@ -281,7 +309,6 @@ void asteroid_break(int n)
 			SCORE+= 100;
 			breaker->gone = 1;
 			printf("Is %d gone?: %d\n", i, breaker->gone);
-			breaker = NULL;
-		}
+		}*/
 	}
 }

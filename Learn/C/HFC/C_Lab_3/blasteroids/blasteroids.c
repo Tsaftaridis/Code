@@ -248,6 +248,7 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 			manage_blasts();
 
 			int i = 0, j = 0, k = 0;
+			
 			// Compare distances of blasts and asteroids to detect collisions
 			if(BLAST_NUM)
 			{
@@ -278,8 +279,8 @@ void *objects(ALLEGRO_THREAD *thread, void *objects_variables)
 					float ay = asteroid_coordinates[i][j+1];
 
 					float dist_spaceship_ast = sqrt(pow((s.sx - ax), 2) + pow((s.sy - ay), 2));
-					//if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
-					//	printf("Crash!");
+					if(dist_spaceship_ast < SP_RADIUS+AST_RADIUS)
+						printf("Crash!");
 				}
 			}
 		}
